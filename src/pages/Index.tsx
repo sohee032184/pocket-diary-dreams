@@ -12,6 +12,9 @@ const Index = () => {
 
   const transactions = getTransactions();
   const balance = getBalance();
+  const totalExpense = transactions
+    .filter(tx => tx.type === 'expense')
+    .reduce((sum, tx) => sum + tx.amount, 0);
 
   return (
     <div className="min-h-screen bg-background pb-12">
@@ -24,7 +27,7 @@ const Index = () => {
       </header>
 
       <main className="container max-w-md mx-auto px-4 space-y-5" key={refreshKey}>
-        <BalanceCard balance={balance} />
+        <BalanceCard balance={totalExpense} />
         <TransactionForm onSaved={refresh} />
         <CategoryChart transactions={transactions} />
         <WishList balance={balance} />
