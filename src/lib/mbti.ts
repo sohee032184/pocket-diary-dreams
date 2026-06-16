@@ -8,9 +8,9 @@ export interface Question {
   options: { label: string; value: Letter }[];
 }
 
-// 고등학생 일상 맞춤 12문항 (각 축 3문항)
+// 고등학생 일상 맞춤 20문항 (각 축 5문항)
 export const QUESTIONS: Question[] = [
-  // E / I
+  // E / I (5문항)
   { id: 1, axis: 'EI', text: '쉬는 시간 종이 울리면 나는?', options: [
     { label: '친구들한테 우르르 몰려가서 수다 떤다', value: 'E' },
     { label: '자리에서 조용히 핸드폰 보거나 쉰다', value: 'I' },
@@ -23,7 +23,15 @@ export const QUESTIONS: Question[] = [
     { label: '내가 직접 발표하는 게 편하다', value: 'E' },
     { label: '자료 만들기를 맡는 게 좋다', value: 'I' },
   ]},
-  // S / N
+  { id: 13, axis: 'EI', text: '카톡 단톡방이 쉴 새 없이 울릴 때?', options: [
+    { label: '와글와글 재밌게 댓글 달고 있다', value: 'E' },
+    { label: '알림 꺼두고 혼자만의 시간을 즐긴다', value: 'I' },
+  ]},
+  { id: 14, axis: 'EI', text: '학교 축제 부스를 운영한다면?', options: [
+    { label: '손님 맞이하고 떠들며 판매하는 게 좋다', value: 'E' },
+    { label: '부스 꾸미기나 메뉴 개발을 맡고 싶다', value: 'I' },
+  ]},
+  // S / N (5문항)
   { id: 4, axis: 'SN', text: '수업 시간 멍 때릴 때 나는 보통?', options: [
     { label: '오늘 급식 뭐 나오지? 같은 현실적인 생각', value: 'S' },
     { label: '만약 내가 마법사라면…? 같은 상상', value: 'N' },
@@ -36,7 +44,15 @@ export const QUESTIONS: Question[] = [
     { label: '교과서랑 필기 그대로 외운다', value: 'S' },
     { label: '내 방식대로 정리하고 흐름을 이해한다', value: 'N' },
   ]},
-  // T / F
+  { id: 15, axis: 'SN', text: '새 학기 교과서를 받으면?', options: [
+    { label: '실용적인 부록이나 연습문제부터 본다', value: 'S' },
+    { label: '표지 디자인이나 흥미로운 소제목부터 본다', value: 'N' },
+  ]},
+  { id: 16, axis: 'SN', text: '친구가 "나 어제 꿈에 너 나왔어" 라면?', options: [
+    { label: '꿈 내용이 뭔지 현실적으로 궁금하다', value: 'S' },
+    { label: '그 꿀이 무슨 의미일지 상상한다', value: 'N' },
+  ]},
+  // T / F (5문항)
   { id: 7, axis: 'TF', text: '친구가 "나 오늘 시험 망쳤어ㅠㅠ" 라고 하면?', options: [
     { label: '"어디서 틀렸어? 다음엔 이렇게 해봐"', value: 'T' },
     { label: '"헐 진짜? 속상하겠다ㅠㅠ 괜찮아??"', value: 'F' },
@@ -49,7 +65,15 @@ export const QUESTIONS: Question[] = [
     { label: '스토리 구성이랑 개연성을 따진다', value: 'T' },
     { label: '주인공한테 몰입해서 운다/웃는다', value: 'F' },
   ]},
-  // J / P
+  { id: 17, axis: 'TF', text: '급식 메뉴를 고를 때 나는?', options: [
+    { label: '영양소나 가성비를 따져서 선택한다', value: 'T' },
+    { label: '끌리는 걸 그때그때 마음대로 고른다', value: 'F' },
+  ]},
+  { id: 18, axis: 'TF', text: '동아리 부원 모집을 할 때 나는?', options: [
+    { label: '실적이나 역량을 기준으로 뽑는다', value: 'T' },
+    { label: '열정이나 팀워크를 우선적으로 본다', value: 'F' },
+  ]},
+  // J / P (5문항)
   { id: 10, axis: 'JP', text: '방학 시작! 나는?', options: [
     { label: '계획표부터 짠다. 하루 단위로 빡세게', value: 'J' },
     { label: '계획? 그날 기분에 맞춰서 하면 됨', value: 'P' },
@@ -61,6 +85,14 @@ export const QUESTIONS: Question[] = [
   { id: 12, axis: 'JP', text: '약속 시간에 나는?', options: [
     { label: '항상 10분 전에 도착해 있다', value: 'J' },
     { label: '딱 맞춰서 혹은 살짝 늦게 도착한다', value: 'P' },
+  ]},
+  { id: 19, axis: 'JP', text: '모의고사 D-3, 나의 공부 상태는?', options: [
+    { label: '이미 2회독 끝내고 마지막 점검 중', value: 'J' },
+    { label: '범위가 아직 남았는데 일단 집중 파이팅!', value: 'P' },
+  ]},
+  { id: 20, axis: 'JP', text: '학교 종이 치면 나는?', options: [
+    { label: '미리 정한 일과 순서대로 움직인다', value: 'J' },
+    { label: '당장 끌리는 걸 먼저 하러 간다', value: 'P' },
   ]},
 ];
 
