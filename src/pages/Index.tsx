@@ -1,14 +1,50 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import { QUESTIONS, TYPES, calculateType, type Letter } from "@/lib/mbti";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 
-type Stage = "intro" | "quiz" | "result";
+type Stage = "intro" | "quiz" | "result" | "history";
+type Saved = { id: string; mbti_type: string; created_at: string };
 
 const Index = () => {
   const [stage, setStage] = useState<Stage>("intro");
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Record<number, Letter>>({});
+
+  const { user } = useAuth();
+  const [saved, setSaved] = useState(false);
+  const [history, setHistory] = useState<Saved[]>([]);
+
+  const loadHistory = async () => {
+    const { data, error } = await supabase
+      .from("mbti_results")
+      .select("id, mbti_type, created_at")
+      .order("created_at", { ascending: false });
+    if (error) return toast.error("기록을 불러오지 못했어 😢");
+    setHistory(data ?? []);
+  };
+
+  useEffect(() => {
+    if (stage === "history" && user) loadHistory();
+  }, [stage, user]);
+
+  const saveResult = async (type: string) => {
+    if (!user) return;
+    const { error } = await supabase.from("mbti_results").insert({ user_id: user.id, mbti_type: type });
+    if (error) return toast.error("저장에 실패했어 😢");
+    setSaved(true);
+    toast.success("결과를 저장했어! 💾");
+  };
+
+  const deleteResult = async (id: string) => {
+    const { error } = await supabase.from("mbti_results").delete().eq("id", id);
+    if (error) return toast.error("삭제에 실패했어");
+    setHistory((h) => h.filter((r) => r.id !== id));
+  };
 
   const total = QUESTIONS.length;
   const current = QUESTIONS[step];
@@ -27,6 +63,7 @@ const Index = () => {
   const handleRestart = () => {
     setAnswers({});
     setStep(0);
+    setSaved(false);
     setStage("intro");
   };
 
@@ -37,6 +74,14 @@ const Index = () => {
       <header className="pt-10 pb-6 px-4 text-center">
         <h1 className="text-3xl font-display text-primary">고딩 MBTI 테스트 ✨</h1>
         <p className="text-xs text-muted-foreground mt-1 font-body">우리반 진짜 내 모습은?</p>
+        <div className="flex justify-center gap-3 mt-3 text-xs font-body">
+          <button onClick={() => setStage("history")} className="text-primary hover:underline">📚 내 결과 기록</button>
+          {user ? (
+            <button onClick={() => supabase.auth.signOut()} className="text-muted-foreground hover:text-primary">로그아웃</button>
+          ) : (
+            <Link to="/auth" className="text-muted-foreground hover:text-primary">로그인</Link>
+          )}
+        </div>
       </header>
 
       <main className="container max-w-md mx-auto px-4">
@@ -130,6 +175,21 @@ const Index = () => {
               </div>
             </div>
 
+            {user ? (
+              <Button
+                size="lg"
+                className="w-full rounded-full font-display text-lg h-12"
+                disabled={saved}
+                onClick={() => saveResult(resultType.type)}
+              >
+                {saved ? "저장 완료 ✅" : "결과 저장하기 💾"}
+              </Button>
+            ) : (
+              <Button asChild size="lg" className="w-full rounded-full font-display text-lg h-12">
+                <Link to="/auth">로그인하고 결과 저장하기 💾</Link>
+              </Button>
+            )}
+
             <Button
               size="lg"
               variant="outline"
@@ -137,6 +197,39 @@ const Index = () => {
               onClick={handleRestart}
             >
               다시 테스트하기 🔄
+            </Button>
+          </section>
+        )}
+        {stage === "history" && (
+          <section className="animate-fade-in space-y-4">
+            <h2 className="text-2xl font-display text-primary text-center">📚 내 MBTI 기록</h2>
+            {!user ? (
+              <div className="rounded-2xl bg-card border border-border p-6 text-center space-y-3">
+                <p className="text-sm font-body text-foreground/80">로그인하면 저장한 결과를 볼 수 있어!</p>
+                <Button asChild className="rounded-full font-display"><Link to="/auth">로그인하기</Link></Button>
+              </div>
+            ) : history.length === 0 ? (
+              <p className="text-sm text-muted-foreground font-body text-center py-8">아직 저장한 결과가 없어 🥲</p>
+            ) : (
+              history.map((r) => {
+                const t = TYPES[r.mbti_type];
+                return (
+                  <div key={r.id} className="rounded-2xl bg-card border border-border p-4 flex items-center gap-4 shadow-sm">
+                    <div className="text-4xl">{t?.emoji}</div>
+                    <div className="flex-1">
+                      <p className="font-display text-2xl text-primary">{r.mbti_type}</p>
+                      <p className="text-xs font-body text-foreground/80">{t?.nickname}</p>
+                      <p className="text-[11px] text-muted-foreground font-body">
+                        {new Date(r.created_at).toLocaleDateString("ko-KR")}
+                      </p>
+                    </div>
+                    <button onClick={() => deleteResult(r.id)} className="text-xs text-muted-foreground hover:text-destructive font-body">삭제</button>
+                  </div>
+                );
+              })
+            )}
+            <Button size="lg" variant="outline" className="w-full rounded-full font-display text-lg h-12" onClick={handleRestart}>
+              ← 처음으로
             </Button>
           </section>
         )}
