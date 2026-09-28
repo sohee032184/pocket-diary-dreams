@@ -203,7 +203,7 @@ const Index = () => {
               <Input placeholder="저장할 때 쓴 이름" maxLength={30} value={name} onChange={(e) => setName(e.target.value)} onKeyDown={(e) => e.key === "Enter" && loadHistory()} className="rounded-full" />
               <Button className="rounded-full font-display shrink-0" onClick={loadHistory}>찾기 🔍</Button>
             </div>
-            {history === null ? null            ) : history.length === 0 ? (
+            {history === null ? null : history.length === 0 ? (
               <p className="text-sm text-muted-foreground font-body text-center py-8">아직 저장한 결과가 없어 🥲</p>
             ) : (
               history.map((r) => {
