@@ -14,13 +14,40 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      mbti_results: {
+        Row: {
+          created_at: string
+          id: string
+          mbti_type: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          mbti_type: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          mbti_type?: string
+          name?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_mbti_results_by_name: {
+        Args: { _name: string }
+        Returns: {
+          created_at: string
+          id: string
+          mbti_type: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
